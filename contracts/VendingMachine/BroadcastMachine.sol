@@ -98,7 +98,9 @@ contract WhitelistedRole is AdminRole {
     }
 }
 
-contract VendingMachine is AdminRole, WhitelistedRole {
+
+
+contract BroadcastingMachine is AdminRole, WhitelistedRole {
   using SafeMath for uint256;
 
   ERC20Vendable public tokenContract;
@@ -165,16 +167,16 @@ contract VendingMachine is AdminRole, WhitelistedRole {
       msg.sender.transfer(amount);
   }
 
-  //*****************  Product/Vendor related code *******************//
+  //*****************  Broadcast/User related code *******************//
 
   mapping (address => Broadcast) public broadcasts;
 
-  mapping (address => mapping (uint256 => Product)) public products;
+  mapping (address => User) public users;
 
-  event UpdateBroadcast(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
-
-
-  event AddProduct(address indexed vendor, uint256 id, uint256 cost, bytes32 name, bool isAvailable);
+//|||| TODO udate events
+  event UpdateBroadcast(address indexed broadcaster, uint256 streamID, bool isLive, uint256 blockEnd);
+  event AddUser(address indexed user, uint256 userID, uint256 payedTill);
+// |||||||||||||||||||
 
   struct Broadcast {
     uint256 streamID;
@@ -184,7 +186,7 @@ contract VendingMachine is AdminRole, WhitelistedRole {
   }
 
   struct User {
-    uint256 userId;
+    uint256 userID;
     uint256 payedTill; // block number till which user payed 
                        // TODO: add formula to calculate blocknumber
   }
@@ -195,37 +197,34 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
     broadcasts[_paymentAddress] = Broadcast({
       streamID: _streamID,
       paymentAddress: _paymentAddress,
-      blockEnd: _blockEnd,
+      blockEnd: _blockEnd
     });
 
   _emitUpdateBroadcast(_paymentAddress);
   }
 
 
-  function addProduct(uint256 id, bytes32 name, uint256 cost, bool isAvailable) public {
-    require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
-    products[msg.sender][id] = Product({
-      id: id,
-      cost: cost,
-      name: name,
-      exists: true,
-      isAvailable: isAvailable
+  function addUser(uint256 _userID, uint256 _payedTill) public {
+    // require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
+    users[_userID] = User({
+      userID: _userID,
+      payedTill: _payedTill
     });
 
-    emit AddProduct(msg.sender, id, cost, name, isAvailable);
+    emit AddUser(msg.sender, id, cost, name, isAvailable);
   }
 
-  function activateVendor(bool _isActive) public {
+  function statusBroadcast(bool _isLive) public {
     //Existing vendor check happens in _updateVendor. No need to do it here
-    _updateVendor(
-      msg.sender,
-      vendors[msg.sender].name,
-      _isActive,
-      vendors[msg.sender].isAllowed
+    _updateBroadcast(
+      msg.sender, // I would change it to _paymentAddress as well
+      broadcasts[msg.sender]._streamID,
+      _isLive,
+      broadcasts[msg.sender]._blockEnd
     );
   }
                                                                                                         //DUNNO SHOULD IT BE HERE?
-  function updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) /*public onlyAdmin*/ {
+  function updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) public /*onlyAdmin*/ {
     _updateBroadcast(_paymentAddress, _streamID, _isLive, _blockEnd);
   }
 

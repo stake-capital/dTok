@@ -58,12 +58,12 @@ export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading
             }} style={buttonStyle.secondary}>
               <Scaler config={{startZoomAt:400,origin:"50% 50%"}}>
                 <div style={{fontSize:20}}>
-                  Buy
+                  💸
                 </div>
               </Scaler>
             </button>
           </div>
-          <div className="col-5" style={{marginLeft:5}}>
+          {/* <div className="col-5" style={{marginLeft:5}}>
             <button className="btn btn-large w-100" disabled={parseInt(amount)<=0} onClick={() => {
               console.log("SELL")
               setLoading(emojiIndex,true)
@@ -84,7 +84,7 @@ export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading
                 </div>
               </Scaler>
             </button>
-          </div>
+          </div> */}
           <div className="col-1">
           </div>
         </div>
