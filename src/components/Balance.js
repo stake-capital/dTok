@@ -58,7 +58,7 @@ export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading
             }} style={buttonStyle.secondary}>
               <Scaler config={{startZoomAt:400,origin:"50% 50%"}}>
                 <div style={{fontSize:20}}>
-                  Buy
+                  💸
                 </div>
               </Scaler>
             </button>
