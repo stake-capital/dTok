@@ -138,6 +138,14 @@ function addBroadcast(string _streamID, address _paymentAddress, uint256 _blockE
 
         emit BuyTime(msg.sender,price,TimeBalance[msg.sender]);
         return true;
-
 }
+
+    function withdraw(address _paymentAddress, uint256 _amount) public {
+      require(broadcasts[_paymentAddress].blockEnd != 0,
+              "Should be existing broadcaster");
+      _paymentAddress.transfer(_amount);
+                      
+    } 
+
+
 }
