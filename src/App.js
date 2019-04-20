@@ -1560,7 +1560,7 @@ render() {
                   {balanceDisplay}
 
 
-                  {/* <RecentTransactions
+                  <RecentTransactions
                     dollarDisplay={dollarDisplay}
                     view={this.state.view}
                     buttonStyle={buttonStyle}
@@ -1570,7 +1570,7 @@ render() {
                     address={account}
                     block={this.state.block}
                     recentTxs={ERC20TOKEN?this.state.fullRecentTxs:this.state.recentTxs}
-                  /> */}
+                  />
                 </div>
                 <Bottom
                   icon={"wrench"}
