@@ -174,7 +174,9 @@ contract BroadcastingMachine is AdminRole, WhitelistedRole {
   mapping (address => User) public users;
 
   event UpdateBroadcast(address indexed broadcaster, uint256 streamID, bool isLive, uint256 blockEnd);
-  event AddUser(address indexed user, uint256 userID, uint256 payedTill);
+  event UpdateUser(address indexed user, uint256 userID, uint256 payedTill, bool canWatch);
+
+
 
   struct Broadcast {
     uint256 streamID;
@@ -187,10 +189,11 @@ contract BroadcastingMachine is AdminRole, WhitelistedRole {
     uint256 userID;
     uint256 payedTill; // block number till which user payed 
                        // TODO: add formula to calculate blocknumber
+    bool canWatch;
   }
 
 function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _blockEnd) public {
-  // require(!broadcasts[_paymentAddress].exists, "BroadcastMachine::addBroadcast This address already is a broadcaster.");
+  require(!broadcasts[_paymentAddress].exists, "BroadcastMachine::addBroadcast This address already is a broadcaster.");
 
     broadcasts[_paymentAddress] = Broadcast({
       streamID: _streamID,
@@ -204,13 +207,23 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
 
 
   function addUser(uint256 _userID, uint256 _payedTill) public {
-    // require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
+    require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
     users[msg.sender] = User({
       userID: _userID,
-      payedTill: _payedTill
+      payedTill: _payedTill,
+      canWatch: true
     });
 
-    emit AddUser(msg.sender, _userID, _payedTill);
+    emit UpdateUser(msg.sender, _userID, _payedTill, true);
+  }
+
+  function cannotWatch(address _user) public {
+    users[_user] = User({
+      userID: users[_user].userID,
+      payedTill: users[_user].payedTill,
+      canWatch: false
+    });      
+    emit UpdateUser(_user, _userID, _payedTill, false);
   }
 
   function statusBroadcast(bool _isLive) public {
