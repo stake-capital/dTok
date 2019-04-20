@@ -1473,10 +1473,11 @@ render() {
             balanceDisplay = (
               <div>
 
-
-
                 {extraTokens}
 
+                <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
+                   LivePEER FRAME
+                </div>
 
                 {/* <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
                    Thanks for playing! Game Over!
