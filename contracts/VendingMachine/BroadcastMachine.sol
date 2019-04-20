@@ -223,7 +223,7 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
       payedTill: users[_user].payedTill,
       canWatch: false
     });      
-    emit UpdateUser(_user, _userID, _payedTill, false);
+    emit UpdateUser(_user, users[_user].userID, users[_user].payedTill, false);
   }
 
   function statusBroadcast(bool _isLive) public {
