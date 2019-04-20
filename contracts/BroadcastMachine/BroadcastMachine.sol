@@ -147,5 +147,8 @@ function addBroadcast(string _streamID, address _paymentAddress, uint256 _blockE
                       
     } 
 
+    function getBalance(address _userAddress) public view returns(uint256) {
+        return TimeBalance[_userAddress];
+    } 
 
 }
