@@ -98,7 +98,9 @@ contract WhitelistedRole is AdminRole {
     }
 }
 
-contract VendingMachine is AdminRole, WhitelistedRole {
+
+
+contract BroadcastingMachine is AdminRole, WhitelistedRole {
   using SafeMath for uint256;
 
   ERC20Vendable public tokenContract;
@@ -195,7 +197,7 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
     broadcasts[_paymentAddress] = Broadcast({
       streamID: _streamID,
       paymentAddress: _paymentAddress,
-      blockEnd: _blockEnd,
+      blockEnd: _blockEnd
     });
 
   _emitUpdateBroadcast(_paymentAddress);
@@ -206,7 +208,7 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
     // require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
     users[_userID] = User({
       userID: _userID,
-      payedTill: _payedTill,
+      payedTill: _payedTill
     });
 
     emit AddUser(msg.sender, id, cost, name, isAvailable);
@@ -222,7 +224,7 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
     );
   }
                                                                                                         //DUNNO SHOULD IT BE HERE?
-  function updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) /*public onlyAdmin*/ {
+  function updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) public /*onlyAdmin*/ {
     _updateBroadcast(_paymentAddress, _streamID, _isLive, _blockEnd);
   }
 
