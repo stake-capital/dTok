@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ContractLoader, Dapparatus, Transactions, Gas, Address, Events } from "dapparatus";
+import { ContractLoader, Dapparatus, Transactions, Gas, Address, Events, Blockie } from "dapparatus";
 import Web3 from 'web3';
 import axios from 'axios';
 import { I18nextProvider } from 'react-i18next';
@@ -44,8 +44,8 @@ import incogDetect from './services/incogDetect.js'
 //https://github.com/lesnitsky/react-native-webview-messaging/blob/v1/examples/react-native/web/index.js
 import RNMessageChannel from 'react-native-webview-messaging';
 
-
 import bufficorn from './bufficorn.png';
+import emojicoin from './emojicoin.png';
 import cypherpunk from './cypherpunk.png';
 import eth from './ethereum.png';
 import dai from './dai.jpg';
@@ -58,6 +58,8 @@ const EthCrypto = require('eth-crypto');
 //const POA_XDAI_NODE = "https://dai-b.poa.network"
 const POA_XDAI_NODE = "https://dai.poa.network"
 
+let emojis = ["🔥","❤️","🎉","🙏","🍑","💪","💩","👌"]
+
 let XDAI_PROVIDER = POA_XDAI_NODE
 
 let WEB3_PROVIDER
@@ -69,15 +71,16 @@ let ERC20NAME
 let LOADERIMAGE = burnerlogo
 let HARDCODEVIEW// = "loader"// = "receipt"
 let FAILCOUNT = 0
+let SUPERSIMPLEVIEW = false
 
 let mainStyle = {
   width:"100%",
   height:"100%",
   backgroundImage:"linear-gradient(#292929, #191919)",
   backgroundColor:"#191919",
-  hotColor:"#F69E4D",
-  mainColorAlt:"#fa7d36",
-  mainColor:"#F76B1C",
+  hotColor:"#74a680",//3aca07
+  mainColorAlt:"#568f64",
+  mainColor:"#5fa16f",
 }
 
 let title = i18n.t('app_name')
@@ -90,25 +93,31 @@ if (window.location.hostname.indexOf("localhost") >= 0 || window.location.hostna
   XDAI_PROVIDER = "http://localhost:8545"
   WEB3_PROVIDER = "http://localhost:8545";
   CLAIM_RELAY = 'http://localhost:18462'
-  if(true){
+  if(false){
     ERC20NAME = false
     ERC20TOKEN = false
     ERC20IMAGE = false
   }else{
-    ERC20NAME = 'BUFF'
+    ERC20NAME = 'emojicoin'
     ERC20VENDOR = 'VendingMachine'
     ERC20TOKEN = 'ERC20Vendable'
-    ERC20IMAGE = bufficorn
+    ERC20IMAGE = emojicoin
     XDAI_PROVIDER = "http://localhost:8545"
     WEB3_PROVIDER = "http://localhost:8545";
-    LOADERIMAGE = bufficorn
+    LOADERIMAGE = emojicoin
+    SUPERSIMPLEVIEW = "emojicoinexchange"
   }
 
 }
-else if (window.location.hostname.indexOf("s.xdai.io") >= 0) {
+else if (window.location.hostname.indexOf("emojicoin.exchange") >= 0  ) {
+  ERC20NAME = 'emojicoin'
+  ERC20VENDOR = 'VendingMachine'
+  ERC20TOKEN = 'ERC20Vendable'
+  ERC20IMAGE = emojicoin
+  XDAI_PROVIDER = POA_XDAI_NODE
   WEB3_PROVIDER = POA_XDAI_NODE;
-  CLAIM_RELAY = 'https://x.xdai.io'
-  ERC20TOKEN = false//'Burner'
+  LOADERIMAGE = emojicoin
+  SUPERSIMPLEVIEW = "emojicoinexchange"
 }
 else if (window.location.hostname.indexOf("wallet.galleass.io") >= 0) {
   //WEB3_PROVIDER = "https://rinkeby.infura.io/v3/e0ea6e73570246bbb3d4bd042c4b5dac";
@@ -268,6 +277,7 @@ class App extends Component {
       hasUpdateOnce: false,
       badges: {},
       selectedBadge: false,
+      isLoading:[],
     };
     this.alertTimeout = null;
 
@@ -496,6 +506,32 @@ class App extends Component {
       let tokenBalance = await this.state.contracts[ERC20TOKEN].balanceOf(this.state.account).call()
       //console.log("balance is ",tokenBalance)
       tokenBalance = this.state.web3.utils.fromWei(""+tokenBalance,'ether')
+
+      if(SUPERSIMPLEVIEW=="emojicoinexchange"){
+        let emojibalances = []
+        let emojimultiplier = await this.state.contracts[ERC20TOKEN].COSTMULTIPLIER().call()
+        let emojiprice = []
+
+        for(let i=0;i<emojis.length;i++){
+          emojiprice[i] = await this.state.contracts[ERC20TOKEN].getEmojiPrice(i).call()
+          emojiprice[i] = this.state.mainnetweb3.utils.fromWei(""+(emojiprice[i]*emojimultiplier),'ether')
+
+          //mapping (address => mapping (uint8 => uint256)) emojiBalance;
+          emojibalances[i] = await this.state.contracts[ERC20TOKEN].emojiBalanceOf(this.state.account,i).call()
+        }
+
+        let vendingMachineAddress = this.state.contracts["VendingMachine"]._address
+        //console.log("vendingMachineAddress",vendingMachineAddress)
+        let vendingMachineBalance = await this.state.xdaiweb3.eth.getBalance(vendingMachineAddress)
+        //console.log("vendingMachineBalance",vendingMachineBalance)
+        vendingMachineBalance = this.state.mainnetweb3.utils.fromWei(""+vendingMachineBalance,"ether")
+        this.setState({
+          emojiprice:emojiprice,
+          emojibalances:emojibalances,
+          vendingMachineBalance:vendingMachineBalance
+        })
+      }
+
 
       //console.log("Getting admin from ",this.state.contracts[ERC20VENDOR])
       let isAdmin = await this.state.contracts[ERC20VENDOR].isAdmin(this.state.account).call()
@@ -1337,7 +1373,7 @@ render() {
 
           let defaultBalanceDisplay = (
             <div>
-              <Balance icon={xdai} selected={false} text={"xdai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay} />
+              <Balance  icon={xdai} mainStyle={mainStyle} selected={false} text={"xdai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay} />
               <Ruler/>
             </div>
           )
@@ -1346,7 +1382,7 @@ render() {
             selected = ERC20NAME
             extraTokens = (
               <div>
-                <Balance icon={ERC20IMAGE} selected={selected} text={ERC20NAME} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
+                <Balance icon={"🤑"} mainStyle={mainStyle} selected={"emojicoin.exchange"} text={"emojicoin.exchange"} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
                 <Ruler/>
               </div>
             )
@@ -1367,6 +1403,152 @@ render() {
             )
           }
 
+          let balanceDisplay = ""
+
+          if(SUPERSIMPLEVIEW=="emojicoinexchange" && this.state.emojibalances && this.state.emojiprice ){
+
+
+
+            let currentIsLoadings = this.state.isLoading
+            let isLoading = false
+            for(let i=0;i<8;i++){
+              isLoading = isLoading || currentIsLoadings[i]
+            }
+            //console.log("isLoading",isLoading)
+
+
+            let allEmojiBalances = emojis.map((emoji,index)=>{
+              return (
+                <div>
+                  <Balance key={'balance'+index} mainStyle={mainStyle} noimage={true} setLoading={(setIndex,val)=>{
+                    let currentIsLoadings = this.state.isLoading
+                    currentIsLoadings[setIndex] = val
+                    this.setState({isLoading:currentIsLoadings})
+                  }} loading={this.state.isLoading[index]} icon={emoji} totalFunds={this.state.balance} isLoading={isLoading} emojiIndex={index} contracts={this.state.contracts} tx={this.state.tx} force={true} buttonStyle={buttonStyle} selected={selected} text={this.state.emojiprice[index]} amount={this.state.emojibalances[index]} address={account} dollarDisplay={(amount)=>{
+                    return amount
+                  }}/>
+                  <Ruler/>
+                </div>
+
+              )
+            })
+
+            let fontsize = 30
+
+            let winners = [
+              {address:"0x0fa86Ac12bA377cB1D2Ce93111a767B66bF9075A".toLowerCase(),amount:100},
+              {address:"0xD9B12999ADa6bCd5b2787d52d28c0341C1C8d03f".toLowerCase(),amount:	100},
+              {address:"0x7b742F96bC4b7dd277CE1cBeF8ade12Aef333Dc4".toLowerCase(),amount:	57.59},
+              {address:"0xC6DB52F61819104808C97055282246df2124A786".toLowerCase(),amount:	22.73},
+              {address:"0x3F4D607a7b1e18712B2175fB5426576de7CEFF3C".toLowerCase(),amount:	6},
+              {address:"0x70120c09BE01BE438807E125D527719244Dc7BC2".toLowerCase(),amount:	5.03},
+              {address:"0x79577DcADBdd213E6111454Cc09Ca6a31831D4Da".toLowerCase(),amount:	4.67},
+              {address:"0x91ABe41067362c0f9876C2413bF69022E64bDBc3".toLowerCase(),amount:	2.31},
+              {address:"0x60014239b12E9a8Caec20eb256fcB0309CBc76E2".toLowerCase(),amount:	1.15},
+              {address:"0x44Dd5f85409465cd67bdEDA25aC6E6361D6103E3".toLowerCase(),amount:	1}
+            ]
+
+            let winnerDisplay = []
+
+            for(let w in winners){
+              console.log(winners[w])
+              winnerDisplay.push (
+                <div key={"winner"+w} style={{width:"100%",paddingLeft:"5%",paddingRight:"5%",textAlign:'center',fontSize:22}}>
+                  <span style={{paddingRight:10}}>
+                      <Blockie
+                        address={winners[w].address}
+                        config={{size:3}}>
+                      </Blockie>
+                  </span>
+                  <span style={{paddingRight:10,textAlign:'center',fontSize:fontsize,color:"#000000"}}>
+                    {winners[w].address.substring(2,8)}
+                  </span>
+                  <span style={{textAlign:'center',fontSize:fontsize,color:"#5fa16f"}}>
+                    {dollarDisplay(winners[w].amount)}
+                  </span>
+                </div>
+              )
+            }
+
+            balanceDisplay = (
+              <div>
+
+
+
+                {extraTokens}
+
+
+                <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
+                   Thanks for playing! Game Over!
+                  <div>(<a href="https://medium.com/gitcoin/emojicoin-exchange-53f9658c9e3b">read the full story here</a>)</div>
+                </div>
+                <div style={{width:"100%",paddingLeft:"5%",paddingRight:"5%",textAlign:'center',fontSize:18}}>
+                  Winners:
+                </div>
+
+                <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
+                  {winnerDisplay}
+                </div>
+
+
+                {allEmojiBalances}
+
+
+
+                <Balance icon={"⛽"} selected={selected} text={"xDai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay}/>
+                <Ruler/>
+                <Balance icon={dai} selected={selected} text={"DAI"} amount={this.state.daiBalance} address={account} dollarDisplay={dollarDisplay}/>
+                <Ruler/>
+                <Balance icon={eth} selected={selected} text={"ETH"} amount={parseFloat(this.state.ethBalance) * parseFloat(this.state.ethprice)} address={account} dollarDisplay={dollarDisplay}/>
+                <Ruler/>
+                <div style={{opacity:0.6}}>
+                <Balance icon={"🏦"} selected={false} text={"bank"} amount={parseFloat(this.state.vendingMachineBalance)} address={account} dollarDisplay={dollarDisplay}/>
+                </div>
+                <Ruler/>
+                {badgeDisplay}
+
+
+
+                <MainCard
+                  subBalanceDisplay={subBalanceDisplay}
+                  buttonStyle={buttonStyle}
+                  address={account}
+                  balance={balance}
+                  changeAlert={this.changeAlert}
+                  changeView={this.changeView}
+                  dollarDisplay={dollarDisplay}
+                  ERC20TOKEN={ERC20TOKEN}
+                  SUPERSIMPLEVIEW={SUPERSIMPLEVIEW}
+                />
+                {moreButtons}
+              </div>
+            )
+          }else{
+            balanceDisplay = (
+              <div>
+                {extraTokens}
+                <Balance icon={xdai} selected={selected} text={"xDai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay}/>
+                <Ruler/>
+                <Balance icon={dai} selected={selected} text={"DAI"} amount={this.state.daiBalance} address={account} dollarDisplay={dollarDisplay}/>
+                <Ruler/>
+                <Balance icon={eth} selected={selected} text={"ETH"} amount={parseFloat(this.state.ethBalance) * parseFloat(this.state.ethprice)} address={account} dollarDisplay={dollarDisplay}/>
+                <Ruler/>
+                {badgeDisplay}
+                <MainCard
+                  subBalanceDisplay={subBalanceDisplay}
+                  buttonStyle={buttonStyle}
+                  address={account}
+                  balance={balance}
+                  changeAlert={this.changeAlert}
+                  changeView={this.changeView}
+                  dollarDisplay={dollarDisplay}
+                  ERC20TOKEN={ERC20TOKEN}
+                />
+                {moreButtons}
+              </div>
+            )
+          }
+
           switch(view) {
             case 'main':
             return (
@@ -1374,27 +1556,9 @@ render() {
                 <div className="main-card card w-100" style={{zIndex:1}}>
 
 
-                  {extraTokens}
+                  {balanceDisplay}
 
-                  <Balance icon={xdai} selected={selected} text={"xDai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay}/>
-                  <Ruler/>
-                  <Balance icon={dai} selected={selected} text={"DAI"} amount={this.state.daiBalance} address={account} dollarDisplay={dollarDisplay}/>
-                  <Ruler/>
-                  <Balance icon={eth} selected={selected} text={"ETH"} amount={parseFloat(this.state.ethBalance) * parseFloat(this.state.ethprice)} address={account} dollarDisplay={dollarDisplay}/>
-                  <Ruler/>
-                  {badgeDisplay}
 
-                  <MainCard
-                    subBalanceDisplay={subBalanceDisplay}
-                    buttonStyle={buttonStyle}
-                    address={account}
-                    balance={balance}
-                    changeAlert={this.changeAlert}
-                    changeView={this.changeView}
-                    dollarDisplay={dollarDisplay}
-                    ERC20TOKEN={ERC20TOKEN}
-                  />
-                  {moreButtons}
                   <RecentTransactions
                     dollarDisplay={dollarDisplay}
                     view={this.state.view}
