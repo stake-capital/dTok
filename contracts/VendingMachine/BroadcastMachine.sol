@@ -167,63 +167,39 @@ contract VendingMachine is AdminRole, WhitelistedRole {
 
   //*****************  Product/Vendor related code *******************//
 
-  // mapping (address => Vendor) public vendors;
   mapping (address => Broadcast) public broadcasts;
 
   mapping (address => mapping (uint256 => Product)) public products;
 
-  // event UpdateVendor(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
   event UpdateBroadcast(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
 
 
   event AddProduct(address indexed vendor, uint256 id, uint256 cost, bytes32 name, bool isAvailable);
-
-  // struct Vendor {
-  //   bytes32 name;
-  //   bool isActive; //let's vendor indicate if they are open at the time
-  //   bool isAllowed; //let's admin turn them off,
-  //   bool exists;
-  // }
 
   struct Broadcast {
     uint256 streamID;
     address paymentAddress;
     bool isLive;  // indicate if the stream is live
     uint256 blockEnd; //block on which the strem is ending
-    // bool isAllowed; //let's admin turn them off,
-   //  bool exists;
   }
-
-
-  // struct Product {
-  //   uint256 id;
-  //   uint256 cost;
-  //   bytes32 name;
-  //   bool exists;
-  //   bool isAvailable;
-  // }
 
   struct User {
     uint256 userId;
     uint256 payedTill; // block number till which user payed 
                        // TODO: add formula to calculate blocknumber
- //   bytes32 name;
- //   bool exists;
- //   bool isAvailable;
   }
 
 function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _blockEnd) public {
-// TODO: modify ==> require(!vendors[_vendorAddress].exists, "VendingMachine::addVendor This address already is a vendor.");
+   require(!broadcasts[_paymentAddress].exists, "BroadcastMachine::addBroadcast This address already is a broadcaster.");
 
-    vendors[_vendorAddress] = Vendor({
+    broadcasts[_paymentAddress] = Broadcast({
       streamID: _streamID,
       paymentAddress: _paymentAddress,
       blockEnd: _blockEnd,
     });
 
-//!!! TODO: modify ==>    _emitUpdateVendor(_vendorAddress);
+  _emitUpdateBroadcast(_paymentAddress);
   }
-
 
 
   function addProduct(uint256 id, bytes32 name, uint256 cost, bool isAvailable) public {
@@ -239,19 +215,6 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
     emit AddProduct(msg.sender, id, cost, name, isAvailable);
   }
 
-  // function addVendor(address _vendorAddress, bytes32 _name) public onlyAdmin {
-  //   require(!vendors[_vendorAddress].exists, "VendingMachine::addVendor This address already is a vendor.");
-
-  //   vendors[_vendorAddress] = Vendor({
-  //     name: _name,
-  //     isActive: false,
-  //     isAllowed: true,
-  //     exists: true
-  //   });
-
-  //   _emitUpdateVendor(_vendorAddress);
-  // }
-
   function activateVendor(bool _isActive) public {
     //Existing vendor check happens in _updateVendor. No need to do it here
     _updateVendor(
@@ -261,39 +224,28 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
       vendors[msg.sender].isAllowed
     );
   }
-
-  function updateVendor(address _vendorAddress, bytes32 _name, bool _isActive, bool _isAllowed) public onlyAdmin {
-    _updateVendor(_vendorAddress, _name, _isActive, _isAllowed);
+                                                                                                        //DUNNO SHOULD IT BE HERE?
+  function updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) /*public onlyAdmin*/ {
+    _updateBroadcast(_paymentAddress, _streamID, _isLive, _blockEnd);
   }
 
-  function _updateVendor(address _vendorAddress, bytes32 _name, bool _isActive, bool _isAllowed) private {
-    require(vendors[_vendorAddress].exists, "VendingMachine::_updateVendor Cannot update a non-existent vendor");
+  function _updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) private {
+    require(broadcasts[_vendorAddress].exists, "VendingMachine::_updateVendor Cannot update a non-existent vendor");
 
-    vendors[_vendorAddress].name = _name;
-    vendors[_vendorAddress].isActive = _isActive;
-    vendors[_vendorAddress].isAllowed = _isAllowed;
+    broadcasts[_paymentAddress].streamID = _streamID;
+    broadcasts[_paymentAddress].isLive = _isLive;
+    broadcasts[_paymentAddress].blockEnd = _blockEnd;
 
-    _emitUpdateVendor(_vendorAddress);
+    _emitUpdateBroadcast(_paymentAddress);
   }
 
   function _emitUpdateBroadcast(address _paymentAddress) private {
-    emit UpdateVendor(
-      _vendorAddress,
-      vendors[_vendorAddress].name,
-      vendors[_vendorAddress].isActive,
-      vendors[_vendorAddress].isAllowed,
+    emit UpdateBroadcast(
+      _paymentAddress,
+      broadcasts[_paymentAddress].streamID,
+      broadcasts[_paymentAddress].isLive,
+      broadcasts[_paymentAddress].blockEnd,
       msg.sender
     );
   }
-
-
-  // function _emitUpdateVendor(address _vendorAddress) private {
-  //   emit UpdateVendor(
-  //     _vendorAddress,
-  //     vendors[_vendorAddress].name,
-  //     vendors[_vendorAddress].isActive,
-  //     vendors[_vendorAddress].isAllowed,
-  //     msg.sender
-  //   );
-  // }
 }
