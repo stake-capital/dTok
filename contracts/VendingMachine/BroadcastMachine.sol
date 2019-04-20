@@ -25,8 +25,8 @@ contract BroadcastingMachine {
 //*****************  Broadcast/User related code *******************//
 
   mapping (address => Broadcast) public broadcasts;
-
-  mapping (address => User) public users;
+ 
+ //  mapping (address => User) public users;
 
   event UpdateBroadcast(address indexed broadcaster, string streamID, bool isLive, uint256 blockEnd);
   event UpdateUser(address indexed user, uint256 userID, uint256 payedTill, bool canWatch);
@@ -40,15 +40,15 @@ contract BroadcastingMachine {
     uint256 blockEnd; //block on which the strem is ending
   }
 
-  struct User {
-    uint256 userID;
-    uint256 payedTill; // block number till which user payed 
-                       // TODO: add formula to calculate blocknumber
-    bool canWatch;
-  }
+  // struct User {
+  //   uint256 userID;
+  //   uint256 payedTill; // block number till which user payed 
+  //                      // TODO: add formula to calculate blocknumber
+  //   bool canWatch;
+  // }
 
 function addBroadcast(string _streamID, address _paymentAddress, uint256 _blockEnd) public {
-  require(!broadcasts[_paymentAddress].exists, "BroadcastMachine::addBroadcast This address already is a broadcaster.");
+//  require(!broadcasts[_paymentAddress].exists, "BroadcastMachine::addBroadcast This address already is a broadcaster.");
   
     broadcasts[_paymentAddress] = Broadcast({
       streamID: _streamID,
@@ -61,25 +61,25 @@ function addBroadcast(string _streamID, address _paymentAddress, uint256 _blockE
   }
 
 
-  function addUser(uint256 _userID, uint256 _payedTill) public {
-//    require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
-    users[msg.sender] = User({
-      userID: _userID,
-      payedTill: _payedTill,
-      canWatch: true
-    });
+//   function addUser(uint256 _userID, uint256 _payedTill) public {
+// //    require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
+//     users[msg.sender] = User({
+//       userID: _userID,
+//       payedTill: _payedTill,
+//       canWatch: true // they
+//     });
 
-    emit UpdateUser(msg.sender, _userID, _payedTill, true);
-  }
+  //   emit UpdateUser(msg.sender, _userID, _payedTill, true);
+  // }
 
-  function cannotWatch(address _user) public {
-    users[_user] = User({
-      userID: users[_user].userID,
-      payedTill: users[_user].payedTill,
-      canWatch: false
-    });      
-    emit UpdateUser(_user, users[_user].userID, users[_user].payedTill, false);
-  }
+//   function cannotWatch(address _user) public {
+//     users[_user] = User({
+//       userID: users[_user].userID,
+//       payedTill: users[_user].payedTill,
+//       canWatch: false
+//     });      
+//     emit UpdateUser(_user, users[_user].userID, users[_user].payedTill, false);
+//   }
 
   function statusBroadcast(bool _isLive) public {
     //Existing vendor check happens in _updateVendor. No need to do it here
@@ -113,31 +113,31 @@ function addBroadcast(string _streamID, address _paymentAddress, uint256 _blockE
       broadcasts[_paymentAddress].blockEnd
 //      msg.sender
     );
-  }}
+  }
 
-contract BroadcastPayable {
-      address public broadcastMachine;
+//      address public broadcastMachine;
+      // modifier onlyBroadcastMachine() {
+      //   require(msg.sender == broadcastMachine);
+      // _;
+      // }
 
       mapping (address => uint256) TimeBalance;
 
-      modifier onlyBroadcastMachine() {
-        require(msg.sender == broadcastMachine);
-      _;
-      }
+      event BuyTime(address sender, uint256 price, uint256 fullPrice);
 
-      function buyTime() public returns (bool){
-        uint16 price = 200000000000000000;
-        // uint256 fullPrice = uint256(price)*2*COSTMULTIPLIER;
+      function buyTime() public payable returns (bool){
+        uint64 price = 200000000000000000;
+        require(msg.value == price,
+        "Please send 20 xDai cents");
 
-        transfer(address(this), price);
-        //require(coinInventory[index]>=1,"BroadcastPayable::buyTime");
-        //coinInventory[index] = coinInventory[index]--;
-
-        TimeBalance[msg.sender]+=46;
+        if (TimeBalance[msg.sender] == 0){
+            TimeBalance[msg.sender] = 46; // ADD: if statement in the future
+        } else {
+             TimeBalance[msg.sender] += 46; // ADD: if statement in the future
+        }
 
         emit BuyTime(msg.sender,price,TimeBalance[msg.sender]);
         return true;
-      }
-      event BuyTime(address sender, uint256 price, uint256 fullPrice);
-    
+
+}
 }
