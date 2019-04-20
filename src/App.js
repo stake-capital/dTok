@@ -90,7 +90,7 @@ let titleImage = (
 )
 
 //<i className="fas fa-fire" />
-if (window.location.hostname.indexOf("ngrok") >= 0 || window.location.hostname.indexOf("localhost") >= 0 || window.location.hostname.indexOf("10.0.0.107") >= 0) {
+if (window.location.hostname.indexOf("localhost") >= 0 || window.location.hostname.indexOf("10.0.0.107") >= 0) {
   XDAI_PROVIDER = "http://localhost:8545"
   WEB3_PROVIDER = "http://localhost:8545";
   CLAIM_RELAY = 'http://localhost:18462'
@@ -138,6 +138,15 @@ else if (window.location.hostname.indexOf("xdai") >= 0) {
   ERC20TOKEN = false
 }
 else if (window.location.hostname.indexOf("buffidai") >= 0) {
+  WEB3_PROVIDER = POA_XDAI_NODE;
+  CLAIM_RELAY = 'https://x.xdai.io'
+  ERC20NAME = 'BUFF'
+  ERC20VENDOR = 'VendingMachine'
+  ERC20TOKEN = 'ERC20Vendable'
+  ERC20IMAGE = bufficorn
+  LOADERIMAGE = bufficorn
+}
+else if (window.location.hostname.indexOf("netlify.com") >= 0) {
   WEB3_PROVIDER = POA_XDAI_NODE;
   CLAIM_RELAY = 'https://x.xdai.io'
   ERC20NAME = 'BUFF'
