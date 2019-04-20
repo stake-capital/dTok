@@ -1476,7 +1476,7 @@ render() {
                 {extraTokens}
 
                 <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
-                  <iframe style={{width: "80vw", height: "46vw"}} src="https://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=https%3A%2F%2Fingest1-rinkeby-distro.livepeer.org%2Fstream%2Fcurrent.m3u8" allowfullscreen></iframe>
+                  <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px"}} src="https://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=https%3A%2F%2Fingest1-rinkeby-distro.livepeer.org%2Fstream%2Fcurrent.m3u8" allowfullscreen></iframe>
                 </div>
 
                 {/* <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
@@ -1560,7 +1560,7 @@ render() {
                   {balanceDisplay}
 
 
-                  <RecentTransactions
+                  {/* <RecentTransactions
                     dollarDisplay={dollarDisplay}
                     view={this.state.view}
                     buttonStyle={buttonStyle}
@@ -1570,7 +1570,7 @@ render() {
                     address={account}
                     block={this.state.block}
                     recentTxs={ERC20TOKEN?this.state.fullRecentTxs:this.state.recentTxs}
-                  />
+                  /> */}
                 </div>
                 <Bottom
                   icon={"wrench"}
