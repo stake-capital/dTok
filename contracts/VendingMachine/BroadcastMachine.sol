@@ -167,16 +167,14 @@ contract BroadcastingMachine is AdminRole, WhitelistedRole {
       msg.sender.transfer(amount);
   }
 
-  //*****************  Broadcast/User related code *******************//
+//*****************  Broadcast/User related code *******************//
 
   mapping (address => Broadcast) public broadcasts;
 
   mapping (address => User) public users;
 
-//|||| TODO udate events
   event UpdateBroadcast(address indexed broadcaster, uint256 streamID, bool isLive, uint256 blockEnd);
   event AddUser(address indexed user, uint256 userID, uint256 payedTill);
-// |||||||||||||||||||
 
   struct Broadcast {
     uint256 streamID;
@@ -192,11 +190,12 @@ contract BroadcastingMachine is AdminRole, WhitelistedRole {
   }
 
 function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _blockEnd) public {
-   require(!broadcasts[_paymentAddress].exists, "BroadcastMachine::addBroadcast This address already is a broadcaster.");
+  // require(!broadcasts[_paymentAddress].exists, "BroadcastMachine::addBroadcast This address already is a broadcaster.");
 
     broadcasts[_paymentAddress] = Broadcast({
       streamID: _streamID,
       paymentAddress: _paymentAddress,
+      isLive: true,
       blockEnd: _blockEnd
     });
 
@@ -206,30 +205,30 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
 
   function addUser(uint256 _userID, uint256 _payedTill) public {
     // require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
-    users[_userID] = User({
+    users[msg.sender] = User({
       userID: _userID,
       payedTill: _payedTill
     });
 
-    emit AddUser(msg.sender, id, cost, name, isAvailable);
+    emit AddUser(msg.sender, _userID, _payedTill);
   }
 
   function statusBroadcast(bool _isLive) public {
     //Existing vendor check happens in _updateVendor. No need to do it here
     _updateBroadcast(
       msg.sender, // I would change it to _paymentAddress as well
-      broadcasts[msg.sender]._streamID,
+      broadcasts[msg.sender].streamID,
       _isLive,
-      broadcasts[msg.sender]._blockEnd
+      broadcasts[msg.sender].blockEnd
     );
   }
-                                                                                                        //DUNNO SHOULD IT BE HERE?
-  function updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) public /*onlyAdmin*/ {
+                                                                                                        
+  function updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) public {
     _updateBroadcast(_paymentAddress, _streamID, _isLive, _blockEnd);
   }
 
   function _updateBroadcast(address _paymentAddress, uint256 _streamID, bool _isLive, uint256 _blockEnd) private {
-    require(broadcasts[_vendorAddress].exists, "VendingMachine::_updateVendor Cannot update a non-existent vendor");
+//    require(broadcasts[_paymentAddress].exists, "BroadcastMachine::_updateBroadcast Cannot update a non-existent broadcast");
 
     broadcasts[_paymentAddress].streamID = _streamID;
     broadcasts[_paymentAddress].isLive = _isLive;
@@ -243,8 +242,7 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
       _paymentAddress,
       broadcasts[_paymentAddress].streamID,
       broadcasts[_paymentAddress].isLive,
-      broadcasts[_paymentAddress].blockEnd,
-      msg.sender
+      broadcasts[_paymentAddress].blockEnd
+//      msg.sender
     );
-  }
-}
+  }}
