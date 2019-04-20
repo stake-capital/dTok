@@ -18,6 +18,7 @@ import Receive from './components/Receive'
 import Share from './components/Share'
 import ShareLink from './components/ShareLink'
 import Balance from "./components/Balance";
+import BuyTime from "./components/BuyTime";
 import Badges from "./components/Badges";
 import Ruler from "./components/Ruler";
 import Receipt from "./components/Receipt";
@@ -89,7 +90,7 @@ let titleImage = (
 )
 
 //<i className="fas fa-fire" />
-if (window.location.hostname.indexOf("localhost") >= 0 || window.location.hostname.indexOf("10.0.0.107") >= 0) {
+if (window.location.hostname.indexOf("ngrok") >= 0 || window.location.hostname.indexOf("localhost") >= 0 || window.location.hostname.indexOf("10.0.0.107") >= 0) {
   XDAI_PROVIDER = "http://localhost:8545"
   WEB3_PROVIDER = "http://localhost:8545";
   CLAIM_RELAY = 'http://localhost:18462'
@@ -1476,7 +1477,11 @@ render() {
                 {extraTokens}
 
                 <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
-                  <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px"}} src="https://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=https%3A%2F%2Fingest1-rinkeby-distro.livepeer.org%2Fstream%2Fcurrent.m3u8" allowfullscreen></iframe>
+                  <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2F96698e5f.ngrok.io%2Fstream%2Fbf2519b8ad951a13edc7b58645321240523ec14ff7a96b51bac2b96e67d9dd1cP720p30fps16x9.m3u8" allowfullscreen></iframe>
+                </div>
+
+                <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
+                  <img src="/button-icons/qr.png" style={{width: 200}} />
                 </div>
 
                 {/* <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
@@ -1492,9 +1497,9 @@ render() {
                 </div> */}
 
 
-                {allEmojiBalances}
+                {/*allEmojiBalances*/}
 
-
+                <BuyTime />
 
                 <Balance icon={"⛽"} selected={selected} text={"xDai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay}/>
                 <Ruler/>
