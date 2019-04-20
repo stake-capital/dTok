@@ -518,30 +518,30 @@ class App extends Component {
       //console.log("balance is ",tokenBalance)
       tokenBalance = this.state.web3.utils.fromWei(""+tokenBalance,'ether')
 
-      if(SUPERSIMPLEVIEW=="emojicoinexchange"){
-        let emojibalances = []
-        let emojimultiplier = await this.state.contracts[ERC20TOKEN].COSTMULTIPLIER().call()
-        let emojiprice = []
+      // if(SUPERSIMPLEVIEW=="emojicoinexchange"){
+      //   let emojibalances = []
+      //   let emojimultiplier = await this.state.contracts[ERC20TOKEN].COSTMULTIPLIER().call()
+      //   let emojiprice = []
 
-        for(let i=0;i<emojis.length;i++){
-          emojiprice[i] = await this.state.contracts[ERC20TOKEN].getEmojiPrice(i).call()
-          emojiprice[i] = this.state.mainnetweb3.utils.fromWei(""+(emojiprice[i]*emojimultiplier),'ether')
+      //   for(let i=0;i<emojis.length;i++){
+      //     emojiprice[i] = await this.state.contracts[ERC20TOKEN].getEmojiPrice(i).call()
+      //     emojiprice[i] = this.state.mainnetweb3.utils.fromWei(""+(emojiprice[i]*emojimultiplier),'ether')
 
-          //mapping (address => mapping (uint8 => uint256)) emojiBalance;
-          emojibalances[i] = await this.state.contracts[ERC20TOKEN].emojiBalanceOf(this.state.account,i).call()
-        }
+      //     //mapping (address => mapping (uint8 => uint256)) emojiBalance;
+      //     emojibalances[i] = await this.state.contracts[ERC20TOKEN].emojiBalanceOf(this.state.account,i).call()
+      //   }
 
-        let vendingMachineAddress = this.state.contracts["VendingMachine"]._address
-        //console.log("vendingMachineAddress",vendingMachineAddress)
-        let vendingMachineBalance = await this.state.xdaiweb3.eth.getBalance(vendingMachineAddress)
-        //console.log("vendingMachineBalance",vendingMachineBalance)
-        vendingMachineBalance = this.state.mainnetweb3.utils.fromWei(""+vendingMachineBalance,"ether")
-        this.setState({
-          emojiprice:emojiprice,
-          emojibalances:emojibalances,
-          vendingMachineBalance:vendingMachineBalance
-        })
-      }
+      //   let vendingMachineAddress = this.state.contracts["VendingMachine"]._address
+      //   //console.log("vendingMachineAddress",vendingMachineAddress)
+      //   let vendingMachineBalance = await this.state.xdaiweb3.eth.getBalance(vendingMachineAddress)
+      //   //console.log("vendingMachineBalance",vendingMachineBalance)
+      //   vendingMachineBalance = this.state.mainnetweb3.utils.fromWei(""+vendingMachineBalance,"ether")
+      //   this.setState({
+      //     emojiprice:emojiprice,
+      //     emojibalances:emojibalances,
+      //     vendingMachineBalance:vendingMachineBalance
+      //   })
+      // }
 
 
       //console.log("Getting admin from ",this.state.contracts[ERC20VENDOR])
@@ -1393,7 +1393,7 @@ render() {
             selected = ERC20NAME
             extraTokens = (
               <div>
-                <Balance icon={"🤑"} mainStyle={mainStyle} selected={"emojicoin.exchange"} text={"emojicoin.exchange"} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
+                <Balance icon={"🤑"} mainStyle={mainStyle} selected={"dTok"} text={"dTok"} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
                 <Ruler/>
               </div>
             )
@@ -1416,7 +1416,7 @@ render() {
 
           let balanceDisplay = ""
 
-          if(SUPERSIMPLEVIEW=="emojicoinexchange" && this.state.emojibalances && this.state.emojiprice ){
+          if(SUPERSIMPLEVIEW=="emojicoinexchange"){
 
 
 
@@ -1428,21 +1428,21 @@ render() {
             //console.log("isLoading",isLoading)
 
 
-            let allEmojiBalances = emojis.map((emoji,index)=>{
-              return (
-                <div>
-                  <Balance key={'balance'+index} mainStyle={mainStyle} noimage={true} setLoading={(setIndex,val)=>{
-                    let currentIsLoadings = this.state.isLoading
-                    currentIsLoadings[setIndex] = val
-                    this.setState({isLoading:currentIsLoadings})
-                  }} loading={this.state.isLoading[index]} icon={emoji} totalFunds={this.state.balance} isLoading={isLoading} emojiIndex={index} contracts={this.state.contracts} tx={this.state.tx} force={true} buttonStyle={buttonStyle} selected={selected} text={this.state.emojiprice[index]} amount={this.state.emojibalances[index]} address={account} dollarDisplay={(amount)=>{
-                    return amount
-                  }}/>
-                  <Ruler/>
-                </div>
+            // let allEmojiBalances = emojis.map((emoji,index)=>{
+            //   return (
+            //     <div>
+            //       <Balance key={'balance'+index} mainStyle={mainStyle} noimage={true} setLoading={(setIndex,val)=>{
+            //         let currentIsLoadings = this.state.isLoading
+            //         currentIsLoadings[setIndex] = val
+            //         this.setState({isLoading:currentIsLoadings})
+            //       }} loading={this.state.isLoading[index]} icon={emoji} totalFunds={this.state.balance} isLoading={isLoading} emojiIndex={index} contracts={this.state.contracts} tx={this.state.tx} force={true} buttonStyle={buttonStyle} selected={selected} text={this.state.emojiprice[index]} amount={this.state.emojibalances[index]} address={account} dollarDisplay={(amount)=>{
+            //         return amount
+            //       }}/>
+            //       <Ruler/>
+            //     </div>
 
-              )
-            })
+            //   )
+            // })
 
             let fontsize = 30
 
