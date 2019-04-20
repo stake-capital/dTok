@@ -58,7 +58,7 @@ const EthCrypto = require('eth-crypto');
 //const POA_XDAI_NODE = "https://dai-b.poa.network"
 const POA_XDAI_NODE = "https://dai.poa.network"
 
-let emojis = ["🔥","❤️","🎉","🙏","🍑","💪","💩","👌"]
+let emojis = ["🔥","❤️"]
 
 let XDAI_PROVIDER = POA_XDAI_NODE
 
@@ -1473,10 +1473,11 @@ render() {
             balanceDisplay = (
               <div>
 
-
-
                 {extraTokens}
 
+                <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
+                  <iframe style={{width: "80vw", height: "45vw"}} src="https://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=https%3A%2F%2Fingest1-rinkeby-distro.livepeer.org%2Fstream%2Fcurrent.m3u8" allowfullscreen></iframe>
+                </div>
 
                 {/* <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
                    Thanks for playing! Game Over!

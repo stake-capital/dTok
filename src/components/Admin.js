@@ -174,9 +174,9 @@ export default class Advanced extends React.Component {
     return (
       <div className="main-card card w-100">
 
-        {vendorDisplay}
+        {/* {vendorDisplay} */}
 
-        <div className="content bridge row">
+        {/* <div className="content bridge row">
           <div className="col-1 p-1">
             {vendorBlockie}
           </div>
@@ -204,7 +204,7 @@ export default class Advanced extends React.Component {
             </Scaler>
           </button>
           </div>
-        </div>
+        </div> */}
 
       </div>
     )
