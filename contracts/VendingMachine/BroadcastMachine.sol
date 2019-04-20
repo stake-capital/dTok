@@ -165,16 +165,16 @@ contract VendingMachine is AdminRole, WhitelistedRole {
       msg.sender.transfer(amount);
   }
 
-  //*****************  Product/Vendor related code *******************//
+  //*****************  Broadcast/User related code *******************//
 
   mapping (address => Broadcast) public broadcasts;
 
-  mapping (address => mapping (uint256 => Product)) public products;
+  mapping (address => User) public users;
 
+//|||| TODO udate events
   event UpdateBroadcast(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
-
-
   event AddProduct(address indexed vendor, uint256 id, uint256 cost, bytes32 name, bool isAvailable);
+// |||||||||||||||||||
 
   struct Broadcast {
     uint256 streamID;
@@ -184,7 +184,7 @@ contract VendingMachine is AdminRole, WhitelistedRole {
   }
 
   struct User {
-    uint256 userId;
+    uint256 userID;
     uint256 payedTill; // block number till which user payed 
                        // TODO: add formula to calculate blocknumber
   }
@@ -202,23 +202,20 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
   }
 
 
-  function addProduct(uint256 id, bytes32 name, uint256 cost, bool isAvailable) public {
-    require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
-    products[msg.sender][id] = Product({
-      id: id,
-      cost: cost,
-      name: name,
-      exists: true,
-      isAvailable: isAvailable
+  function addUser(uint256 _userID, uint256 _payedTill) public {
+    // require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
+    users[_userID] = User({
+      userID: _userID,
+      payedTill: _payedTill,
     });
 
-    emit AddProduct(msg.sender, id, cost, name, isAvailable);
+    emit AddUser(msg.sender, id, cost, name, isAvailable);
   }
 
   function statusBroadcast(bool _isLive) public {
     //Existing vendor check happens in _updateVendor. No need to do it here
     _updateBroadcast(
-      msg.sender, // I would change it to _payment address as well
+      msg.sender, // I would change it to _paymentAddress as well
       broadcasts[msg.sender]._streamID,
       _isLive,
       broadcasts[msg.sender]._blockEnd
