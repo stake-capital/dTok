@@ -172,8 +172,8 @@ contract VendingMachine is AdminRole, WhitelistedRole {
   mapping (address => User) public users;
 
 //|||| TODO udate events
-  event UpdateBroadcast(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
-  event AddProduct(address indexed vendor, uint256 id, uint256 cost, bytes32 name, bool isAvailable);
+  event UpdateBroadcast(address indexed broadcaster, uint256 streamID, bool isLive, uint256 blockEnd);
+  event AddUser(address indexed user, uint256 userID, uint256 payedTill);
 // |||||||||||||||||||
 
   struct Broadcast {
