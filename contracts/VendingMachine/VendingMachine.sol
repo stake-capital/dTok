@@ -173,20 +173,40 @@ contract VendingMachine is AdminRole, WhitelistedRole {
   event UpdateVendor(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
   event AddProduct(address indexed vendor, uint256 id, uint256 cost, bytes32 name, bool isAvailable);
 
-  struct Vendor {
-    bytes32 name;
-    bool isActive; //let's vendor indicate if they are open at the time
-    bool isAllowed; //let's admin turn them off,
-    bool exists;
+  // struct Vendor {
+  //   bytes32 name;
+  //   bool isActive; //let's vendor indicate if they are open at the time
+  //   bool isAllowed; //let's admin turn them off,
+  //   bool exists;
+  // }
+
+  struct Broadcast {
+    bytes32 streamID;
+    address paymentAddress;
+    bool isLive;  // indicate if the stream is live
+    uint256 blockEnd; //block on which the strem is ending
+    // bool isAllowed; //let's admin turn them off,
+   //  bool exists;
   }
 
-  struct Product {
-    uint256 id;
-    uint256 cost;
-    bytes32 name;
-    bool exists;
-    bool isAvailable;
+
+  // struct Product {
+  //   uint256 id;
+  //   uint256 cost;
+  //   bytes32 name;
+  //   bool exists;
+  //   bool isAvailable;
+  // }
+
+  struct User {
+    uint256 userId;
+    uint256 payedTill; // block number till which user payed 
+                       // TODO: add formula to calculate blocknumber
+ //   bytes32 name;
+ //   bool exists;
+ //   bool isAvailable;
   }
+
 
   function addProduct(uint256 id, bytes32 name, uint256 cost, bool isAvailable) public {
     require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");

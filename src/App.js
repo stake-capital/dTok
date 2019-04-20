@@ -39,6 +39,7 @@ import Exchange from './components/Exchange'
 import Bottom from './components/Bottom';
 import customRPCHint from './customRPCHint.png';
 import namehash from 'eth-ens-namehash'
+import incogDetect from './services/incogDetect.js'
 
 //https://github.com/lesnitsky/react-native-webview-messaging/blob/v1/examples/react-native/web/index.js
 import RNMessageChannel from 'react-native-webview-messaging';
@@ -342,12 +343,45 @@ class App extends Component {
   saveKey(update){
     this.setState(update)
   }
+  detectContext(){
+    console.log("DETECTING CONTEXT....")
+    //snagged from https://stackoverflow.com/questions/52759238/private-incognito-mode-detection-for-ios-12-safari
+    incogDetect((result)=>{
+      if(result){
+        console.log("INCOG")
+        document.getElementById("main").style.backgroundImage = "linear-gradient(#862727, #671c1c)"
+        document.body.style.backgroundColor = "#671c1c"
+        var elem = document.createElement('div');
+        elem.style.cssText = 'position:absolute;right:5px;top:-15px;opacity:0.2;z-index:100;font-size:60px;color:#FFFFFF';
+        elem.innerHTML = 'INCOGNITO';
+        document.body.appendChild(elem);
+      }else if (typeof web3 !== 'undefined') {
+        if (window.web3.currentProvider.isMetaMask === true) {
+          document.getElementById("main").style.backgroundImage = "linear-gradient(#553319, #ca6e28)"
+          document.body.style.backgroundColor = "#ca6e28"
+          var elem = document.createElement('div');
+          elem.style.cssText = 'position:absolute;right:5px;top:-15px;opacity:0.2;z-index:100;font-size:60px;color:#FFFFFF';
+          elem.innerHTML = 'METAMASK';
+          document.body.appendChild(elem);
+        } else if(!this.state.metaAccount) {
+          document.getElementById("main").style.backgroundImage = "linear-gradient(#234063, #305582)"
+          document.body.style.backgroundColor = "#305582"
+          var elem = document.createElement('div');
+          elem.style.cssText = 'position:absolute;right:5px;top:-15px;opacity:0.2;z-index:100;font-size:60px;color:#FFFFFF';
+          elem.innerHTML = 'WEB3';
+          document.body.appendChild(elem);
+        }
+      }
+    })
+  }
   componentDidMount(){
+
+    document.body.style.backgroundColor = mainStyle.backgroundColor
 
     Wyre.configure();
 
+    this.detectContext()
 
-    document.body.style.backgroundColor = mainStyle.backgroundColor
     console.log("document.getElementsByClassName('className').style",document.getElementsByClassName('.btn').style)
     window.addEventListener("resize", this.updateDimensions.bind(this));
     if(window.location.pathname){
@@ -1139,7 +1173,7 @@ render() {
 
   return (
     <I18nextProvider i18n={i18n}>
-    <div style={mainStyle}>
+    <div id="main" style={mainStyle}>
       <div style={innerStyle}>
         {extraHead}
         {networkOverlay}
@@ -1838,12 +1872,31 @@ render() {
                       let randomWallet = this.state.web3.eth.accounts.create()
                       let sig = this.state.web3.eth.accounts.sign(randomHash, randomWallet.privateKey);
                       console.log("STATE",this.state,this.state.contracts)
-                      this.state.tx(this.state.contracts.Links.send(randomHash,sig.signature,0,amount*10**18,7),250000,false,amount*10**18,async (receipt)=>{
-                        this.setState({sendLink: randomHash,sendKey: randomWallet.privateKey},()=>{
-                          console.log("STATE SAVED",this.state)
+                      // Use xDai as default token
+                      const tokenAddress = ERC20TOKEN === false ? 0 : this.state.contracts[ERC20TOKEN]._address;
+                      // -- Temp hacks
+                      const expirationTime = 365; // Hard-coded to 1 year link expiration.
+                      const amountToSend = amount*10**18 ; // Conversion to wei
+                      // --
+                      if(!ERC20TOKEN)
+                      {
+                        this.state.tx(this.state.contracts.Links.send(randomHash,sig.signature,tokenAddress,amountToSend,expirationTime),250000,false,amountToSend,async (receipt)=>{
+                          this.setState({sendLink: randomHash,sendKey: randomWallet.privateKey},()=>{
+                            console.log("STATE SAVED",this.state)
+                          })
+                          cb(receipt)
                         })
-                        cb(receipt)
-                      })
+                      } else{
+                        this.state.tx(this.state.contracts[ERC20TOKEN].approve(this.state.contracts.Links._address, amountToSend),21000,false,0,async (approveReceipt)=>{
+                          //cb(approveReceipt)
+                          this.state.tx(this.state.contracts.Links.send(randomHash,sig.signature,tokenAddress,amountToSend,expirationTime),250000,false,amountToSend,async (sendReceipt)=>{
+                            this.setState({sendLink: randomHash,sendKey: randomWallet.privateKey},()=>{
+                              console.log("STATE SAVED",this.state)
+                            })
+                            cb(sendReceipt)
+                          })
+                        })
+                      }
                     }}
                     address={account}
                     changeView={this.changeView}
@@ -2052,6 +2105,7 @@ render() {
           if (state.web3Provider) {
             state.web3 = new Web3(state.web3Provider)
             this.setState(state,()=>{
+              this.detectContext()
               //console.log("state set:",this.state)
               if(this.state.possibleNewPrivateKey){
                 this.dealWithPossibleNewPrivateKey()
