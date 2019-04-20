@@ -167,26 +167,64 @@ contract VendingMachine is AdminRole, WhitelistedRole {
 
   //*****************  Product/Vendor related code *******************//
 
-  mapping (address => Vendor) public vendors;
+  // mapping (address => Vendor) public vendors;
+  mapping (address => Broadcast) public broadcasts;
+
   mapping (address => mapping (uint256 => Product)) public products;
 
-  event UpdateVendor(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
+  // event UpdateVendor(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
+  event UpdateBroadcast(address indexed vendor, bytes32 name, bool isActive, bool isAllowed, address sender);
+
+
   event AddProduct(address indexed vendor, uint256 id, uint256 cost, bytes32 name, bool isAvailable);
 
-  struct Vendor {
-    bytes32 name;
-    bool isActive; //let's vendor indicate if they are open at the time
-    bool isAllowed; //let's admin turn them off,
-    bool exists;
+  // struct Vendor {
+  //   bytes32 name;
+  //   bool isActive; //let's vendor indicate if they are open at the time
+  //   bool isAllowed; //let's admin turn them off,
+  //   bool exists;
+  // }
+
+  struct Broadcast {
+    uint256 streamID;
+    address paymentAddress;
+    bool isLive;  // indicate if the stream is live
+    uint256 blockEnd; //block on which the strem is ending
+    // bool isAllowed; //let's admin turn them off,
+   //  bool exists;
   }
 
-  struct Product {
-    uint256 id;
-    uint256 cost;
-    bytes32 name;
-    bool exists;
-    bool isAvailable;
+
+  // struct Product {
+  //   uint256 id;
+  //   uint256 cost;
+  //   bytes32 name;
+  //   bool exists;
+  //   bool isAvailable;
+  // }
+
+  struct User {
+    uint256 userId;
+    uint256 payedTill; // block number till which user payed 
+                       // TODO: add formula to calculate blocknumber
+ //   bytes32 name;
+ //   bool exists;
+ //   bool isAvailable;
   }
+
+function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _blockEnd) public {
+// TODO: modify ==> require(!vendors[_vendorAddress].exists, "VendingMachine::addVendor This address already is a vendor.");
+
+    vendors[_vendorAddress] = Vendor({
+      streamID: _streamID,
+      paymentAddress: _paymentAddress,
+      blockEnd: _blockEnd,
+    });
+
+//!!! TODO: modify ==>    _emitUpdateVendor(_vendorAddress);
+  }
+
+
 
   function addProduct(uint256 id, bytes32 name, uint256 cost, bool isAvailable) public {
     require(vendors[msg.sender].isAllowed, "VendingMachine::addProduct - vendor is not allowed by admin");
@@ -201,18 +239,18 @@ contract VendingMachine is AdminRole, WhitelistedRole {
     emit AddProduct(msg.sender, id, cost, name, isAvailable);
   }
 
-  function addVendor(address _vendorAddress, bytes32 _name) public onlyAdmin {
-    require(!vendors[_vendorAddress].exists, "VendingMachine::addVendor This address already is a vendor.");
+  // function addVendor(address _vendorAddress, bytes32 _name) public onlyAdmin {
+  //   require(!vendors[_vendorAddress].exists, "VendingMachine::addVendor This address already is a vendor.");
 
-    vendors[_vendorAddress] = Vendor({
-      name: _name,
-      isActive: false,
-      isAllowed: true,
-      exists: true
-    });
+  //   vendors[_vendorAddress] = Vendor({
+  //     name: _name,
+  //     isActive: false,
+  //     isAllowed: true,
+  //     exists: true
+  //   });
 
-    _emitUpdateVendor(_vendorAddress);
-  }
+  //   _emitUpdateVendor(_vendorAddress);
+  // }
 
   function activateVendor(bool _isActive) public {
     //Existing vendor check happens in _updateVendor. No need to do it here
@@ -238,7 +276,7 @@ contract VendingMachine is AdminRole, WhitelistedRole {
     _emitUpdateVendor(_vendorAddress);
   }
 
-  function _emitUpdateVendor(address _vendorAddress) private {
+  function _emitUpdateBroadcast(address _paymentAddress) private {
     emit UpdateVendor(
       _vendorAddress,
       vendors[_vendorAddress].name,
@@ -247,4 +285,15 @@ contract VendingMachine is AdminRole, WhitelistedRole {
       msg.sender
     );
   }
+
+
+  // function _emitUpdateVendor(address _vendorAddress) private {
+  //   emit UpdateVendor(
+  //     _vendorAddress,
+  //     vendors[_vendorAddress].name,
+  //     vendors[_vendorAddress].isActive,
+  //     vendors[_vendorAddress].isAllowed,
+  //     msg.sender
+  //   );
+  // }
 }
