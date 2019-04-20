@@ -149,11 +149,12 @@ else if (window.location.hostname.indexOf("buffidai") >= 0) {
 else if (window.location.hostname.indexOf("netlify.com") >= 0) {
   WEB3_PROVIDER = POA_XDAI_NODE;
   CLAIM_RELAY = 'https://x.xdai.io'
-  ERC20NAME = 'BUFF'
+  ERC20NAME = 'emojicoin'
   ERC20VENDOR = 'VendingMachine'
   ERC20TOKEN = 'ERC20Vendable'
-  ERC20IMAGE = bufficorn
-  LOADERIMAGE = bufficorn
+  ERC20IMAGE = emojicoin
+  LOADERIMAGE = emojicoin
+  SUPERSIMPLEVIEW = "emojicoinexchange"
 }
 else if (window.location.hostname.indexOf("burnerwallet.io") >= 0) {
   WEB3_PROVIDER = POA_XDAI_NODE;
