@@ -154,6 +154,7 @@ else if (window.location.hostname.indexOf("netlify.com") >= 0) {
   ERC20TOKEN = 'ERC20Vendable'
   ERC20IMAGE = bufficorn
   LOADERIMAGE = bufficorn
+  SUPERSIMPLEVIEW = "emojicoinexchange"
 }
 else if (window.location.hostname.indexOf("burnerwallet.io") >= 0) {
   WEB3_PROVIDER = POA_XDAI_NODE;
