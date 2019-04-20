@@ -1,62 +1,61 @@
 pragma solidity 0.4.25;
 
-import "openzeppelin-solidity/contracts/access/Roles.sol";
-import "ERC20Vendable.sol";
+import "../ERC20Vendable/ERC20Vendable.sol";
 
-contract AdminRole {
-  using Roles for Roles.Role;
+// contract AdminRole {
+//   using Roles for Roles.Role;
 
-  event AdminAdded(address indexed account);
-  event AdminRemoved(address indexed account);
+//   event AdminAdded(address indexed account);
+//   event AdminRemoved(address indexed account);
 
-  Roles.Role private admins;
-  address public superAdmin;
+//   Roles.Role private admins;
+//   address public superAdmin;
 
-  constructor() public {
-    _addAdmin(msg.sender);
-    superAdmin = msg.sender;
-  }
+//   constructor() public {
+//     _addAdmin(msg.sender);
+//     superAdmin = msg.sender;
+//   }
 
-  modifier onlyAdmin() {
-    require(isAdmin(msg.sender));
-    _;
-  }
+//   modifier onlyAdmin() {
+//     require(isAdmin(msg.sender));
+//     _;
+//   }
 
-  modifier onlySuperAdmin() {
-    require(isSuperAdmin(msg.sender));
-    _;
-  }
+//   modifier onlySuperAdmin() {
+//     require(isSuperAdmin(msg.sender));
+//     _;
+//   }
 
-  function isAdmin(address account) public view returns (bool) {
-    return admins.has(account);
-  }
+//   function isAdmin(address account) public view returns (bool) {
+//     return admins.has(account);
+//   }
 
-  function isSuperAdmin(address account) public view returns (bool) {
-    return account == superAdmin;
-  }
+//   function isSuperAdmin(address account) public view returns (bool) {
+//     return account == superAdmin;
+//   }
 
-  function addAdmin(address account) public onlySuperAdmin {
-    _addAdmin(account);
-  }
+//   function addAdmin(address account) public onlySuperAdmin {
+//     _addAdmin(account);
+//   }
 
-  function removeAdmin(address account) public onlySuperAdmin {
-    _removeAdmin(account);
-  }
+//   function removeAdmin(address account) public onlySuperAdmin {
+//     _removeAdmin(account);
+//   }
 
-  function renounceAdmin() public {
-    _removeAdmin(msg.sender);
-  }
+//   function renounceAdmin() public {
+//     _removeAdmin(msg.sender);
+//   }
 
-  function _addAdmin(address account) internal {
-    admins.add(account);
-    emit AdminAdded(account);
-  }
+//   function _addAdmin(address account) internal {
+//     admins.add(account);
+//     emit AdminAdded(account);
+//   }
 
-  function _removeAdmin(address account) internal {
-    admins.remove(account);
-    emit AdminRemoved(account);
-  }
-}
+//   function _removeAdmin(address account) internal {
+//     admins.remove(account);
+//     emit AdminRemoved(account);
+//   }
+// }
 
 contract WhitelistedRole is AdminRole {
     using Roles for Roles.Role;
