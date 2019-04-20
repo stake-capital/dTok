@@ -5,11 +5,6 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract BroadcastingMachine is Ownable {
 
-//  Fallback. Just send currency here to deposit
-  function () external payable {
-    deposit();
-  }
-
 //*****************  Broadcast/User related code *******************//
 
   mapping (address => Broadcast) public broadcasts;
