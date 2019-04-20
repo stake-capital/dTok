@@ -1444,7 +1444,7 @@ render() {
                 {extraTokens}
 
 
-                <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
+                {/* <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
                    Thanks for playing! Game Over!
                   <div>(<a href="https://medium.com/gitcoin/emojicoin-exchange-53f9658c9e3b">read the full story here</a>)</div>
                 </div>
@@ -1454,7 +1454,7 @@ render() {
 
                 <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
                   {winnerDisplay}
-                </div>
+                </div> */}
 
 
                 {allEmojiBalances}
