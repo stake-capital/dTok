@@ -215,13 +215,13 @@ function addBroadcast(uint256 _streamID, address _paymentAddress, uint256 _block
     emit AddProduct(msg.sender, id, cost, name, isAvailable);
   }
 
-  function activateVendor(bool _isActive) public {
+  function statusBroadcast(bool _isLive) public {
     //Existing vendor check happens in _updateVendor. No need to do it here
-    _updateVendor(
-      msg.sender,
-      vendors[msg.sender].name,
-      _isActive,
-      vendors[msg.sender].isAllowed
+    _updateBroadcast(
+      msg.sender, // I would change it to _payment address as well
+      broadcasts[msg.sender]._streamID,
+      _isLive,
+      broadcasts[msg.sender]._blockEnd
     );
   }
                                                                                                         //DUNNO SHOULD IT BE HERE?
