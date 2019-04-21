@@ -389,6 +389,8 @@ class App extends Component {
   }
   componentDidMount(){
 
+    setInterval(this.updateDaiBalance, 4000);
+
     document.body.style.backgroundColor = mainStyle.backgroundColor
 
     Wyre.configure();
@@ -1079,6 +1081,20 @@ syncFullTransactions(){
     this.setState({fullRecentTxs:recentTxs,fullTransactionsByAddress:transactionsByAddress})
   }
 }
+updateDaiBalance = () => {
+  // Get value
+
+  fetch("http://37b58454.ngrok.io/api/v1/channels/0xC4375B7De8af5a38a93548eb8453a498222C4fF2/0x85eca41ddA6DA1d26a91f71Efe4E78B06Abd39D0").then(res => {
+    console.log('somethinggg');
+    res.text().then(res2 => {
+      console.log(res2);
+      
+      this.setState({raidenDaiBalance: JSON.parse(res2).balance});
+    });
+
+    // daiBalance = JSON.parse(res.text()).balance;
+  });
+}
 render() {
 
   console.log("HERHEHREHRHEHRE");
@@ -1399,7 +1415,7 @@ render() {
           selected = ERC20NAME
           extraTokens = (
             <div>
-              <Balance icon={"🎥"} mainStyle={mainStyle} selected={"dTok"} text={"dTok"} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
+              <Balance icon={"🎥"} mainStyle={mainStyle} selected={"dTok"} text={"dTok"} amount={this.state.raidenDaiBalance / Math.pow(10,18)} address={account} dollarDisplay={dollarDisplay} />
               <Ruler/>
             </div>
           )
@@ -1487,6 +1503,14 @@ render() {
               )
             }
 
+            // Look up the ENS name
+
+            let streamId;
+            this.ensLookup("ricardo.deserves.eth").then(result => {
+              console.log("more ingooooo");
+              console.log(result);
+            });
+
             balanceDisplay = (
               <div>
 
@@ -1495,7 +1519,7 @@ render() {
                 <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
                   <div style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px", position:"relative", marginLeft: "auto", marginRight: "auto"}}>
                     <div style={{maxWidth: 200, maxHeight: 50, bottom: 10, left: 10, position: "absolute"}}>
-                      <div style={{display: 'inline-block', paddingLeft: 10, color: 'white', }}>something.eth</div>
+                      <div style={{display: 'inline-block', paddingLeft: 10, color: 'white', }}>ricardo.deserves.eth</div>
                     </div>
                     <div style={{maxWidth: 200, maxHeight: 50, bottom: 10, right: 10, position: "absolute"}}>
                       <img style={{borderRadius: 10, display: 'inline-block', width: 35, padding: 5, backgroundColor: 'white'}} src="/button-icons/noun_Money_Bag_526460_000000.svg" />
@@ -1523,9 +1547,9 @@ render() {
 
                 <BuyTime balance={this.state.balance} />
 
-                <Balance icon={"⛽"} selected={selected} text={"xDai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay}/>
-                <Ruler/>
-                <Balance icon={dai} selected={selected} text={"DAI"} amount={this.state.daiBalance} address={account} dollarDisplay={dollarDisplay}/>
+                {/*<Balance icon={"⛽"} selected={selected} text={"xDai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay}/>
+                <Ruler/>*/}
+                <Balance icon={dai} selected={selected} text={"DAI"} amount={this.state.raidenDaiBalance / Math.pow(10,18)} address={account} dollarDisplay={dollarDisplay}/>
                 <Ruler/>
                 <Balance icon={eth} selected={selected} text={"ETH"} amount={parseFloat(this.state.ethBalance) * parseFloat(this.state.ethprice)} address={account} dollarDisplay={dollarDisplay}/>
                 <Ruler/>

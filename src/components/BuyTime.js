@@ -71,18 +71,38 @@ export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading
 
   }
 
+  function postData(url = ``, data = {}) {
+  // Default options are marked with *
+    return fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "no-cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "omit", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+    .then(response => response.json()); // parses JSON response into native Javascript objects 
+  }
+
+
   const handlePayment = () => {
-    fetch('/api/v1/payments/0x2a65Aca4D5fC5B5C859090a6c34d164135398226/0x61C808D82A3Ac53231750daDc13c777b59310bD9').then(res => {
-//       const response = JSON.parse(res.text("{\
-//     \"initiator_address\": \"0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8\",\
-//     \"target_address\": \"0x61C808D82A3Ac53231750daDc13c777b59310bD9\",\
-//     \"token_address\": \"0x2a65Aca4D5fC5B5C859090a6c34d164135398226\",\
-//     \"amount\": 200,\
-//     \"identifier\": 42\
-// }"));
+    postData(
+      'http://37b58454.ngrok.io/api/v1/payments/0xC4375B7De8af5a38a93548eb8453a498222C4fF2/0x85eca41ddA6DA1d26a91f71Efe4E78B06Abd39D0',
+      {
+        "amount": Math.pow(10,16)
+      }
+    ).then(res => {
+      const response = JSON.parse(res.text());
 
+      console.log("it worked!");
+      console.log(response);
 
-    });
+    }).catch(err => {console.error("not working!");console.error(err);});
   };
 
   return (
@@ -90,7 +110,7 @@ export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading
       <div className="avatar col p-0" style={{marginLeft: "auto", marginRight: "auto", maxWidth: 200}}>
         <img src={'/button-icons/noun_cash_2415228_000000.svg'} style={{maxWidth:50,maxHeight:50}}/>
         <div style={{left:60,top:12,fontSize:14,opacity:0.77,paddingTop:10,textAlign:'center'}}>
-          $0.02 per min
+          $0.01 per min
         </div>
       </div>
       <div className="avatar col p-0" style={{marginLeft: "auto", marginRight: "auto", cursor: "pointer"}} onClick={handlePayment}>
