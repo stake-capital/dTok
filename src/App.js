@@ -94,10 +94,11 @@ if (window.location.hostname.indexOf("localhost") >= 0 || window.location.hostna
   XDAI_PROVIDER = "http://localhost:8545"
   WEB3_PROVIDER = "http://localhost:8545";
   CLAIM_RELAY = 'http://localhost:18462'
-  if(false){
+  if(true){
     ERC20NAME = false
     ERC20TOKEN = false
     ERC20IMAGE = false
+    SUPERSIMPLEVIEW = "emojicoinexchange"
   }else{
     ERC20NAME = 'emojicoin'
     ERC20VENDOR = 'VendingMachine'
@@ -149,11 +150,11 @@ else if (window.location.hostname.indexOf("buffidai") >= 0) {
 else if (window.location.hostname.indexOf("netlify.com") >= 0) {
   WEB3_PROVIDER = POA_XDAI_NODE;
   CLAIM_RELAY = 'https://x.xdai.io'
-  ERC20NAME = 'emojicoin'
-  ERC20VENDOR = 'VendingMachine'
-  ERC20TOKEN = 'ERC20Vendable'
-  ERC20IMAGE = emojicoin
-  LOADERIMAGE = emojicoin
+  // ERC20NAME = 'emojicoin'
+  // ERC20VENDOR = 'VendingMachine'
+  // ERC20TOKEN = 'ERC20Vendable'
+  // ERC20IMAGE = emojicoin
+  // LOADERIMAGE = emojicoin
   SUPERSIMPLEVIEW = "emojicoinexchange"
 }
 else if (window.location.hostname.indexOf("burnerwallet.io") >= 0) {
@@ -1078,6 +1079,10 @@ syncFullTransactions(){
   }
 }
 render() {
+
+  console.log("HERHEHREHRHEHRE");
+  console.log(this.state.contracts);
+    
   let {
     web3, account, tx, gwei, block, avgBlockTime, etherscan, balance, metaAccount, burnMetaAccount, view, alert, send
   } = this.state;
@@ -1389,16 +1394,16 @@ render() {
             </div>
           )
 
-          if(ERC20TOKEN){
-            selected = ERC20NAME
-            extraTokens = (
-              <div>
-                <Balance icon={"🤑"} mainStyle={mainStyle} selected={"dTok"} text={"dTok"} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
-                <Ruler/>
-              </div>
-            )
-            defaultBalanceDisplay = extraTokens
-          }
+          // if(ERC20TOKEN){
+          selected = ERC20NAME
+          extraTokens = (
+            <div>
+              <Balance icon={"🐬"} mainStyle={mainStyle} selected={"dTok"} text={"dTok"} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
+              <Ruler/>
+            </div>
+          )
+          defaultBalanceDisplay = extraTokens
+          // }
 
           let badgeDisplay = ""
           if(this.state.badgeBalance>0){
@@ -1487,11 +1492,7 @@ render() {
                 {extraTokens}
 
                 <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
-                  <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2F96698e5f.ngrok.io%2Fstream%2Fbf2519b8ad951a13edc7b58645321240523ec14ff7a96b51bac2b96e67d9dd1cP720p30fps16x9.m3u8" allowfullscreen></iframe>
-                </div>
-
-                <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
-                  <img src="/button-icons/qr.png" style={{width: 200}} />
+                  <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2F96698e5f.ngrok.io%2Fstream%2Fbf842b6363d6b7e20b57012d6a253b00e49719a151004fe347907f5451d7ef10P720p30fps16x9.m3u8" allowfullscreen></iframe>
                 </div>
 
                 {/* <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
@@ -1509,7 +1510,7 @@ render() {
 
                 {/*allEmojiBalances*/}
 
-                <BuyTime />
+                <BuyTime balance={this.state.balance} />
 
                 <Balance icon={"⛽"} selected={selected} text={"xDai"} amount={this.state.xdaiBalance} address={account} dollarDisplay={dollarDisplay}/>
                 <Ruler/>

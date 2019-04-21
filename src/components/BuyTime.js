@@ -3,7 +3,7 @@ import Blockies from 'react-blockies';
 import Loader from './Loader';
 import { Scaler } from "dapparatus";
 
-export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading, buttonStyle, contracts, tx, force, emojiIndex, icon, text, selected, amount, address, dollarDisplay}) => {
+export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading, buttonStyle, contracts, tx, force, emojiIndex, icon, text, selected, amount, address, dollarDisplay, balance}) => {
 
   let lbar = ""
   if(loading){
@@ -85,7 +85,7 @@ export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading
       <div className="avatar col p-0" style={{marginLeft: "auto", marginRight: "auto", maxWidth: 200}}>
         <img src={'/button-icons/noun_account_644483_000000.svg'} style={{maxWidth:50,maxHeight:50}}/>
         <div style={{position:'absolute',left:60,top:12,fontSize:14,opacity:0.77,paddingTop:30}}>
-          128989138912 xDAI
+          {balance} xDAI
         </div>
       </div>
       {/*<div style={{position:"absolute",right:25,marginTop:15}}>
