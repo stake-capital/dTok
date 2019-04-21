@@ -71,21 +71,35 @@ export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading
 
   }
 
+  const handlePayment = () => {
+    fetch('/api/v1/payments/0x2a65Aca4D5fC5B5C859090a6c34d164135398226/0x61C808D82A3Ac53231750daDc13c777b59310bD9').then(res => {
+//       const response = JSON.parse(res.text("{\
+//     \"initiator_address\": \"0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8\",\
+//     \"target_address\": \"0x61C808D82A3Ac53231750daDc13c777b59310bD9\",\
+//     \"token_address\": \"0x2a65Aca4D5fC5B5C859090a6c34d164135398226\",\
+//     \"amount\": 200,\
+//     \"identifier\": 42\
+// }"));
+
+
+    });
+  };
+
   return (
-    <div className="balance row" style={{paddingBottom:20,textAlign:"center",maxHeight:200}}>
+    <div className="balance row" style={{paddingBottom:20,textAlign:"center",maxHeight:200, paddingTop:20}}>
       <div className="avatar col p-0" style={{marginLeft: "auto", marginRight: "auto", maxWidth: 200}}>
         <img src={'/button-icons/noun_cash_2415228_000000.svg'} style={{maxWidth:50,maxHeight:50}}/>
-        <div style={{position:'absolute',left:60,top:12,fontSize:14,opacity:0.77,paddingTop:30}}>
-          0.02 xDAI per min
+        <div style={{left:60,top:12,fontSize:14,opacity:0.77,paddingTop:10,textAlign:'center'}}>
+          $0.02 per min
         </div>
       </div>
-      <div className="avatar col p-0" style={{marginLeft: "auto", marginRight: "auto"}}>
+      <div className="avatar col p-0" style={{marginLeft: "auto", marginRight: "auto", cursor: "pointer"}} onClick={handlePayment}>
         <img src={'/button-icons/DTok_logo.svg'} style={{maxWidth:100,maxHeight:100}}/>
       </div>
       <div className="avatar col p-0" style={{marginLeft: "auto", marginRight: "auto", maxWidth: 200}}>
-        <img src={'/button-icons/noun_account_644483_000000.svg'} style={{maxWidth:50,maxHeight:50}}/>
-        <div style={{position:'absolute',left:60,top:12,fontSize:14,opacity:0.77,paddingTop:30}}>
-          {balance} xDAI
+        <img src={'/button-icons/noun_options_1063648_000000.svg'} style={{maxWidth:50,maxHeight:50}}/>
+        <div style={{left:60,top:12,fontSize:14,opacity:0.77,paddingTop:10,textAlign:'center'}}>
+          4 min
         </div>
       </div>
       {/*<div style={{position:"absolute",right:25,marginTop:15}}>

@@ -41,6 +41,7 @@ import Bottom from './components/Bottom';
 import customRPCHint from './customRPCHint.png';
 import namehash from 'eth-ens-namehash'
 import incogDetect from './services/incogDetect.js'
+import { Line } from 'rc-progress'
 
 //https://github.com/lesnitsky/react-native-webview-messaging/blob/v1/examples/react-native/web/index.js
 import RNMessageChannel from 'react-native-webview-messaging';
@@ -1082,7 +1083,7 @@ render() {
 
   console.log("HERHEHREHRHEHRE");
   console.log(this.state.contracts);
-    
+
   let {
     web3, account, tx, gwei, block, avgBlockTime, etherscan, balance, metaAccount, burnMetaAccount, view, alert, send
   } = this.state;
@@ -1398,7 +1399,7 @@ render() {
           selected = ERC20NAME
           extraTokens = (
             <div>
-              <Balance icon={"🐬"} mainStyle={mainStyle} selected={"dTok"} text={"dTok"} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
+              <Balance icon={"🎥"} mainStyle={mainStyle} selected={"dTok"} text={"dTok"} amount={this.state.balance} address={account} dollarDisplay={dollarDisplay} />
               <Ruler/>
             </div>
           )
@@ -1492,7 +1493,17 @@ render() {
                 {extraTokens}
 
                 <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
-                  <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2F96698e5f.ngrok.io%2Fstream%2Fbf842b6363d6b7e20b57012d6a253b00e49719a151004fe347907f5451d7ef10P720p30fps16x9.m3u8" allowfullscreen></iframe>
+                  <div style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px", position:"relative", marginLeft: "auto", marginRight: "auto"}}>
+                    <div style={{maxWidth: 200, maxHeight: 50, bottom: 10, left: 10, position: "absolute"}}>
+                      <div style={{display: 'inline-block', paddingLeft: 10, color: 'white', }}>something.eth</div>
+                    </div>
+                    <div style={{maxWidth: 200, maxHeight: 50, bottom: 10, right: 10, position: "absolute"}}>
+                      <img style={{borderRadius: 10, display: 'inline-block', width: 35, padding: 5, backgroundColor: 'white'}} src="/button-icons/noun_Money_Bag_526460_000000.svg" />
+                      <div style={{display: 'inline-block', paddingLeft: 10, color: 'white', }}>$10.00</div>
+                    </div>
+                    <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "340px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2F96698e5f.ngrok.io%2Fstream%2Fbf842b6363d6b7e20b57012d6a253b00e49719a151004fe347907f5451d7ef10P720p30fps16x9.m3u8" allowfullscreen></iframe>
+                    <Line percent="10" strokeWidth="4" trailWidth="3" strokeColor="rgb(160,160,160)" trailColor="rgb(200,200,200)" />
+                  </div>
                 </div>
 
                 {/* <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
