@@ -391,6 +391,17 @@ class App extends Component {
 
     setInterval(this.updateDaiBalance, 4000);
 
+    this.setState({percent: 100});
+
+    setTimeout(() => {
+      setInterval(() => {
+        if (this.state.percent <= 10) {
+          return;
+        }
+        this.setState({percent: this.state.percent - 1});
+      },500);
+    }, 20000);
+
     document.body.style.backgroundColor = mainStyle.backgroundColor
 
     Wyre.configure();
@@ -1095,6 +1106,20 @@ updateDaiBalance = () => {
     // daiBalance = JSON.parse(res.text()).balance;
   });
 }
+updateBroadcasterDaiBalance = () => {
+  // Get value
+
+  fetch("http://37b58454.ngrok.io/api/v1/channels/0xC4375B7De8af5a38a93548eb8453a498222C4fF2/0x85eca41ddA6DA1d26a91f71Efe4E78B06Abd39D0").then(res => {
+    console.log('somethinggg');
+    res.text().then(res2 => {
+      console.log(res2);
+      
+      this.setState({raidenDaiBalance: JSON.parse(res2).balance});
+    });
+
+    // daiBalance = JSON.parse(res.text()).balance;
+  });
+}
 render() {
 
   console.log("HERHEHREHRHEHRE");
@@ -1108,8 +1133,8 @@ render() {
   if(web3 && !this.checkNetwork() && view!="exchange"){
     networkOverlay = (
       <div>
-        <input style={{zIndex:13,position:'absolute',opacity:0.95,right:48,top:192,width:194}} value="https://dai.poa.network" />
-        <img style={{zIndex:12,position:'absolute',opacity:0.95,right:0,top:0,maxHeight:370}} src={customRPCHint} />
+        {/*<input style={{zIndex:13,position:'absolute',opacity:0.95,right:48,top:192,width:194}} value="https://dai.poa.network" />
+        <img style={{zIndex:12,position:'absolute',opacity:0.95,right:0,top:0,maxHeight:370}} src={customRPCHint} />*/}
       </div>
     )
   }
@@ -1518,15 +1543,17 @@ render() {
 
                 <div style={{width:"100%",padding:"5%",textAlign:'center',fontSize:22}}>
                   <div style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "338px", position:"relative", marginLeft: "auto", marginRight: "auto"}}>
-                    <div style={{maxWidth: 200, maxHeight: 50, bottom: 10, left: 10, position: "absolute"}}>
+                    <div style={{maxWidth: 200, maxHeight: 50, top: 10, left: 10, position: "absolute"}}>
                       <div style={{display: 'inline-block', paddingLeft: 10, color: 'white', }}>ricardo.deserves.eth</div>
                     </div>
-                    <div style={{maxWidth: 200, maxHeight: 50, bottom: 10, right: 10, position: "absolute"}}>
+                    <div style={{maxWidth: 200, maxHeight: 50, top: 10, right: 10, position: "absolute"}}>
                       <img style={{borderRadius: 10, display: 'inline-block', width: 35, padding: 5, backgroundColor: 'white'}} src="/button-icons/noun_Money_Bag_526460_000000.svg" />
                       <div style={{display: 'inline-block', paddingLeft: 10, color: 'white', }}>$10.00</div>
                     </div>
-                    <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "340px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2F96698e5f.ngrok.io%2Fstream%2Fbf842b6363d6b7e20b57012d6a253b00e49719a151004fe347907f5451d7ef10P720p30fps16x9.m3u8" allowfullscreen></iframe>
-                    <Line percent="10" strokeWidth="4" trailWidth="3" strokeColor="rgb(160,160,160)" trailColor="rgb(200,200,200)" />
+
+                    <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "340px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2Fa7177404.ngrok.io%2Fstream%2F410edc31b2dcdcfc7ce238abe774f78feb32565d56116ccfe58cb75d8d575c64P720p30fps16x9.m3u8" allowfullscreen></iframe>
+
+                    <Line percent={this.state.percent} strokeWidth="4" trailWidth="3" strokeColor="green" trailColor="rgb(200,200,200)" />
                   </div>
                 </div>
 

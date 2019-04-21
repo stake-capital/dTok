@@ -2,6 +2,7 @@ import React from 'react';
 import Blockies from 'react-blockies';
 import Loader from './Loader';
 import { Scaler } from "dapparatus";
+import Maker from '@makerdao/dai'
 
 export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading, buttonStyle, contracts, tx, force, emojiIndex, icon, text, selected, amount, address, dollarDisplay, balance}) => {
 
@@ -90,19 +91,27 @@ export  default ({totalFunds, noimage, mainStyle, setLoading, loading, isLoading
   }
 
 
-  const handlePayment = () => {
-    postData(
-      'http://37b58454.ngrok.io/api/v1/payments/0xC4375B7De8af5a38a93548eb8453a498222C4fF2/0x85eca41ddA6DA1d26a91f71Efe4E78B06Abd39D0',
-      {
-        "amount": Math.pow(10,16)
-      }
-    ).then(res => {
-      const response = JSON.parse(res.text());
+  const handlePayment =  () => {
+    Maker.create('browser').then(makerBrowser => {
+      makerBrowser.authenticate().then(check => {
+        const priceServiceDai = makerBrowser.service('price');
+        priceServiceDai.getWethToPethRatio().then(priceperdai => {
 
-      console.log("it worked!");
-      console.log(response);
+          postData(
+            'http://37b58454.ngrok.io/api/v1/payments/0xC4375B7De8af5a38a93548eb8453a498222C4fF2/0x85eca41ddA6DA1d26a91f71Efe4E78B06Abd39D0',
+            {
+              "amount": (priceperdai * Math.pow(10,16))
+            }
+          ).then(res => {
+            const response = JSON.parse(res.text());
 
-    }).catch(err => {console.error("not working!");console.error(err);});
+            console.log("it worked!");
+            console.log(response);
+
+          }).catch(err => {console.error("not working!");console.error(err);});
+        }).catch(console.error);
+      }).catch(console.error);
+    }).catch(console.error);
   };
 
   return (

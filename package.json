@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@makerdao/dai": "^0.15.1-kovan.1",
     "autolinker": "^2.2.1",
     "axios": "^0.18.0",
     "base64url": "^3.0.1",
