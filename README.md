@@ -1,4 +1,4 @@
-🤺  DTok, a decentralized ay-as-you-go streaming platform to replace TikTok 🚀
+DTok, a decentralized TikTok pay-as-you-go streaming platform 📹
 
 <p align="center">
   <img src="https://github.com/stake-capital/dTok-burnerwallet/blob/master/public/assets/dtok-logo.jpg" />
