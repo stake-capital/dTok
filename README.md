@@ -5,9 +5,13 @@ Built With raiden burner-wallet 👜 dai 💀 ENS 🕸 livepeer 📹 ethereum �
 #DTok a pay-as-you-go streaming platform won all possible prizes at #ethcapetown @ETHGlobal: 
 
 👮‍ WINNER NuCypher @NuCypher
+
 💰 WINNER MakerDAO @MakerDAO
+
 ⚡️ WINNER Raiden @raiden_network
+
 🏆 WINNER ETHCapeTown @ETHCapeTown
+
 🚀 WINNER ENS @ensdomains
 
 Context: https://medium.com/stakecapital/ethcapetown-hackathon-winners-168520fdefec
