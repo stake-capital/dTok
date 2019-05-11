@@ -24,6 +24,8 @@ Devpost: https://devpost.com/software/dtok-amfc4e
 
 Stake Capital DTok Broadcaster Link: http://dtok.stake.capital
 
+Stake Capital Transcoder Campaign: https://forum.livepeer.org/t/transcoder-campaign-stake-capital-0xa6a9/678
+
 Stake Capital Transcoder: 0xa6a9eb29e786b5233bd99c0ba28be882fe954a0e (https://explorer.livepeer.org/accounts/0xa6a9eb29e786b5233bd99c0ba28be882fe954a0e/transcoding)
 
 App: 
