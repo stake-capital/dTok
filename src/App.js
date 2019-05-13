@@ -91,7 +91,7 @@ let titleImage = (
 )
 
 //<i className="fas fa-fire" />
-if (window.location.hostname.indexOf("localhost") >= 0 || window.location.hostname.indexOf("10.0.0.107") >= 0) {
+if (window.location.hostname.indexOf("localhost") >= 0 || window.location.hostname.indexOf("10.0.0.107") >= 0 || window.location.hostname.indexOf("dtok.stake.capital") >= 0) {
   XDAI_PROVIDER = "http://localhost:8545"
   WEB3_PROVIDER = "http://localhost:8545";
   CLAIM_RELAY = 'http://localhost:18462'
@@ -395,7 +395,7 @@ class App extends Component {
 
     setTimeout(() => {
       setInterval(() => {
-        if (this.state.percent <= 10) {
+        if (this.state.percent <= 0) {
           return;
         }
         this.setState({percent: this.state.percent - 1});
@@ -1551,7 +1551,12 @@ render() {
                       <div style={{display: 'inline-block', paddingLeft: 10, color: 'white', }}>$10.00</div>
                     </div>
 
-                    <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "340px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2Fa7177404.ngrok.io%2Fstream%2F410edc31b2dcdcfc7ce238abe774f78feb32565d56116ccfe58cb75d8d575c64P720p30fps16x9.m3u8" allowfullscreen></iframe>
+                    {(this.state.percent >= 10) &&
+                      <iframe style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "340px"}} src="http://media.livepeer.org/embed?aspectRatio=16%3A9&maxWidth=100%25&url=http%3A%2F%2Ff7b14850.ngrok.io%2Fstream%2Fcd0207af4682cd2340a319dfe973f5261d3de64e34faf4d12eca5eb697a0c8f7P720p30fps16x9.m3u8" allowfullscreen></iframe>
+                    }
+                    {(this.state.percent <= 10) &&
+                      <div style={{width: "80vw", height: "46vw", maxWidth: "600px", maxHeight: "340px", backgroundColor: "#CCCC", textAlign: "center", paddingTop: "150px"}}>You have run out of viewing time. 😲</div>
+                    }
 
                     <Line percent={this.state.percent} strokeWidth="4" trailWidth="3" strokeColor="green" trailColor="rgb(200,200,200)" />
                   </div>
